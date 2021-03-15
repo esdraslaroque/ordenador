@@ -21,14 +21,14 @@ Use: %s <opcoes>\n\n\
 [OPCOES]:\n\
 	 -h, --help          		Mostra estas informacoes de ajuda.\n\
          -t, --tamanho=<tamanho_vetor>  Quantidade de elementos do vetor.\n\
-         -a, --algoritmo=<ALGORITMO>	Algoritmo de ordenacao.[ insertion | quick | bucket ]\n\
+         -a, --algoritmo=<ALGORITMO>	Algoritmo de ordenacao.[ insertion | quick | bucket | bubble | selection ]\n\
          -e, --estado=<ESTADO> 		Defini estado do vetor gerado. [ ord | inv | sord | ale ]\n\
          -p, --imprimir	     		Imprimir vetor gerado.\n", nome);
     exit(-1) ;
 }
 
 enum e_ordenacao { ORD, INV, SORD, ALE };
-enum e_algoritmo { INSERTION, QUICK, BUCKET };
+enum e_algoritmo { INSERTION, QUICK, BUCKET, BUBBLE, SELECTION };
 
 struct listaOrdenacao {
 	char *label;
@@ -46,7 +46,9 @@ struct listaAlgoritmo {
 } itens_algoritmo[] = {
 	{"insertion", INSERTION},
 	{"quick", QUICK},
-	{"bucket", BUCKET}
+	{"bucket", BUCKET},
+	{"bubble", BUBBLE},
+	{"selection", SELECTION}
 };
 
 struct timespec t_inicial={0,0}, t_final={0,0};
@@ -159,7 +161,27 @@ main (int argc, char **argv) {
                         printArray(vetor, tam);
 			printf("\n");
                 }
-	}  else {
+	} else if ( strcmp(alg,  itens_algoritmo[3].label) == 0 ) {
+		clock_gettime(CLOCK_REALTIME, &t_inicial);
+                bubble_sort(vetor, tam);
+		clock_gettime(CLOCK_REALTIME, &t_final);
+                if ( flag_imprimir ) {
+			printf("\n");
+                        printf("Bubble_sort( v[%d] )\n", tam);
+                        printArray(vetor, tam);
+			printf("\n");
+                }
+	} else if ( strcmp(alg,  itens_algoritmo[4].label) == 0 ) {
+		clock_gettime(CLOCK_REALTIME, &t_inicial);
+                selection_sort(vetor, tam);
+		clock_gettime(CLOCK_REALTIME, &t_final);
+                if ( flag_imprimir ) {
+			printf("\n");
+                        printf("Selection_sort( v[%d] )\n", tam);
+                        printArray(vetor, tam);
+			printf("\n");
+                }
+	} else {
 		printf("Erro: Algoritmo nao suportado. Utilize \"--help\" para ajuda.\n");
 		return -1;
 	}
