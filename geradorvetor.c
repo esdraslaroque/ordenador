@@ -8,13 +8,14 @@
 #include <stdlib.h>
 #include "geradorvetor.h"
 
+/* Funcao auxiliar para imprimir os vetores */
 void printArray(int A[], int size) {
     int i;
     for (i=0; i < size; i++)
         printf("%d ", A[i]);
     printf("\n");
 }
-
+/* Funcao que gera vetor em estado aleatorio */
 int* vetorAleatorio(int qtd, char print) {
 	time_t t;
 	int i, j, k;
@@ -48,6 +49,7 @@ int* vetorAleatorio(int qtd, char print) {
 	return v;
 }
 
+/* Funcao que gera vetor em estado ordenado */
 int* vetorOrdenado(int qtd, char print) {
         int i;
 	int* v = (int*) malloc(qtd * sizeof(int));
@@ -64,6 +66,7 @@ int* vetorOrdenado(int qtd, char print) {
 	return v;
 }
 
+/* Funcao que gera vetor em estado semi-ordenado */
 int* vetorSemiOrdenado(int qtd, char print) {
 	time_t t;
 	int i, j, k, p;
@@ -126,6 +129,7 @@ int* vetorSemiOrdenado(int qtd, char print) {
         return v;
 }
 
+/* Funcao que gera vetor em estado inversamente ordenado */
 int* vetorInversamenteOrdenado(int qtd, char print) {
 	int i;
 	int* v = (int*) malloc(qtd * sizeof(int));

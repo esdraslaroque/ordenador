@@ -1,3 +1,9 @@
+/*
+ * Conteudo: Arquivo de metodos para chamar Algoritmos de ordenacao
+ * Autor: Esdras La-Roque
+ * Data: 19/04/2015
+ * Versão: 0.5
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
@@ -8,15 +14,16 @@
 #define TRUE 's'
 #define FALSE 'n'
 
-void ajuda(char *name) {
+/* Definindo funcao para mensagem de ajuda */
+void ajuda(char *nome) {
     fprintf(stderr, "\
 Use: %s <opcoes>\n\n\
 [OPCOES]:\n\
-	    -h, --help          		Mostra estas informacoes de ajuda.\n\
-            -t, --tamanho=<tamanho_vetor>     	Quantidade de elementos do vetor.\n\
-            -a, --algoritmo=<ALGORITMO>		Algoritmo de ordenacao.[ insertion | quick | bucket ]\n\
-            -e, --estado=<ESTADO> 		Defini estado do vetor gerado. [ ord | inv | sord | ale ]\n\
-            -p, --imprimir	     		Imprimir vetor gerado.\n", name);
+	 -h, --help          		Mostra estas informacoes de ajuda.\n\
+         -t, --tamanho=<tamanho_vetor>  Quantidade de elementos do vetor.\n\
+         -a, --algoritmo=<ALGORITMO>	Algoritmo de ordenacao.[ insertion | quick | bucket ]\n\
+         -e, --estado=<ESTADO> 		Defini estado do vetor gerado. [ ord | inv | sord | ale ]\n\
+         -p, --imprimir	     		Imprimir vetor gerado.\n", nome);
     exit(-1) ;
 }
 
@@ -46,12 +53,13 @@ struct timespec t_inicial={0,0}, t_final={0,0};
 
 main (int argc, char **argv) {
 
-	/* inicializacao de variaveis */
+	/* Inicializacao de variaveis */
 	int i, opt, tam = NULL;
 	char *alg = NULL, *status = NULL; 
 	int flag_imprimir = 0;
 	int *vetor = NULL;
 
+	/* Parametrizando as opcoes passadas por argumento, baseado na biblioteca getopt.h (Padrao GNU/Linux) */
 	const struct option opcoes[] = {
 		{"help"		, no_argument		, 0		, 'h'},
 		{"tamanho"	, required_argument	, 0		, 't'},
@@ -61,7 +69,8 @@ main (int argc, char **argv) {
 		{0		, 0			, 0		, 0  }
 	};
 
-	if ( argc < 2 )
+	/* Verificando a existencia da quantidade minima de parametros passados via cli */
+	if ( argc < 7 )
 		ajuda(argv[0]);
 
 	/* Tratamento dos argumentos passados ao programa */
@@ -86,6 +95,12 @@ main (int argc, char **argv) {
                 		return -1;
 	        }
     	}
+
+	/* Verificando se o vetor contem o minimo de elementos para ordenar */
+	if ( tam < 2 ) {
+		printf("Erro: O tamanho do vetor não pode ser menor que 2.\n");
+		return -1;
+	}
 	
 	/* Criando vetor com tamanho e estado de ordenacao passados em parametro */
 	if ( strcmp(status,  itens_ordenacao[0].label) == 0 ) {
@@ -108,9 +123,12 @@ main (int argc, char **argv) {
                	        vetor = vetorAleatorio(tam,TRUE);
                 else 
        	                vetor = vetorAleatorio(tam,FALSE);
+	} else {
+		printf("Erro: Estado de ordenacao invalido. Utilize \"--help\" para ajuda.\n");
+		return -1;
 	}
 
-	/* Executando ordenacao baseada no algoritmo escolhido */
+	/* Executando ordenacao baseada no algoritmo escolhido e capturando o tempo de execucao */
 	if ( strcmp(alg, itens_algoritmo[0].label) == 0 ) {
 		clock_gettime(CLOCK_REALTIME, &t_inicial);
 		insertion_sort(vetor, tam);
@@ -119,6 +137,7 @@ main (int argc, char **argv) {
 			printf("\n");
                         printf("Insertion_sort( v[%d] )\n", tam);
                         printArray(vetor, tam);
+			printf("\n");
                 }
 	} else if ( strcmp(alg,  itens_algoritmo[1].label) == 0 ) { 
 		clock_gettime(CLOCK_MONOTONIC, &t_inicial);
@@ -128,6 +147,7 @@ main (int argc, char **argv) {
 			printf("\n");
 			printf("Quick_sort( v[%d] )\n", tam);
 			printArray(vetor, tam);
+			printf("\n");
 		}
 	} else if ( strcmp(alg,  itens_algoritmo[2].label) == 0 ) {
 		clock_gettime(CLOCK_REALTIME, &t_inicial);
@@ -137,17 +157,19 @@ main (int argc, char **argv) {
 			printf("\n");
                         printf("Bucket_sort( v[%d] )\n", tam);
                         printArray(vetor, tam);
+			printf("\n");
                 }
-	} 
+	}  else {
+		printf("Erro: Algoritmo nao suportado. Utilize \"--help\" para ajuda.\n");
+		return -1;
+	}
+
+	/* Iniciando variaveis globais que foram definidas no objeto 'algoritmos.o' e imprimindo resultados */
 	extern long long int mov ;
 	extern long long int comp ;
-	printf("\n");
-	//printf("Tempo de execucao: %.2f\n", ((double) (tempo_final - tempo_inicial) / (CLOCKS_PER_SEC / 1000)) );
-	//printf("Tempo de execucao: %.5f\n", ((double) t_final.tv_sec + 1.0e-9 * t_final.tv_nsec) - 
-	//				    ((double) t_inicial.tv_sec + 1.0e-9 * t_inicial.tv_nsec));
-	printf("Tempo de execucao: %lu\n", t_final.tv_nsec - t_inicial.tv_nsec);
-	printf("Movimentacoes: %d\n", mov);
-	printf("Comparacoes: %d\n", comp);
+	printf("Tempo de execucao (ns): %lu\n", t_final.tv_nsec - t_inicial.tv_nsec);
+	printf("Movimentacoes: %lli\n", mov);
+	printf("Comparacoes: %lli\n", comp);
 
 	return 0;
 }

@@ -26,7 +26,7 @@ void insertion_sort (int *a, int n) {
 }
 /* Fim: Insertion_sort */
 
-/* Inicio: Quick_sort */
+/* Inicio: Quick_sort */ 
 void quick_sort (int *a, int n) {
     int i, j, p, t;
     if (n < 2)
@@ -37,11 +37,14 @@ void quick_sort (int *a, int n) {
             i++;
         while (p < a[j])
             j--;
-        if (i >= j)
+        if (i >= j) {
+	    comp++;
             break;
+	}
         t = a[i];
         a[i] = a[j];
         a[j] = t;
+	mov++;
     }
     quick_sort(a, i);
     quick_sort(a + i, n - i);
@@ -59,7 +62,10 @@ void bucket_sort(int array[], int n) {
         (count[array[i]])++;
  
     for (i = 0, j = 0; i < n; i++)  
-        for(; count[i] > 0; (count[i])--)
+        for(; count[i] > 0; (count[i])--) {
             array[j++] = i;
+	    mov++;
+	}
 }   
+/* Fim: Bucket_sort */
 
